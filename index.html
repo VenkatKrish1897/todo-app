@@ -4,41 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-gradient-start: #667eea;
-      --bg-gradient-end: #764ba2;
-      --heading-color: #333;
-      --input-border: #ddd;
-      --input-bg: #fff;
-      --input-color: #333;
-      --btn-bg: #4a90d9;
-      --btn-hover: #357abd;
-      --item-bg: #fff;
-      --item-shadow: rgba(0, 0, 0, 0.08);
-      --item-color: #333;
-      --completed-color: #999;
-      --empty-color: #999;
-      --toggle-bg: rgba(255, 255, 255, 0.25);
-      --toggle-hover: rgba(255, 255, 255, 0.4);
+      --bg-start: #6366f1;
+      --bg-end: #a855f7;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-border: rgba(255, 255, 255, 0.7);
+      --title-color: #1e1b4b;
+      --subtitle-color: #6b7280;
+      --input-bg: #f8fafc;
+      --input-border: #e2e8f0;
+      --input-border-focus: #6366f1;
+      --input-color: #1e293b;
+      --input-placeholder: #94a3b8;
+      --btn-bg: #6366f1;
+      --btn-hover: #4f46e5;
+      --btn-shadow: rgba(99, 102, 241, 0.35);
+      --item-bg: #ffffff;
+      --item-border: #f1f5f9;
+      --item-shadow: rgba(15, 23, 42, 0.05);
+      --item-hover-shadow: rgba(15, 23, 42, 0.10);
+      --item-hover-border: #c7d2fe;
+      --item-color: #1e293b;
+      --item-completed-color: #94a3b8;
+      --item-accent: #6366f1;
+      --check-border: #cbd5e1;
+      --check-fill: #6366f1;
+      --check-fill-end: #a855f7;
+      --delete-color: #94a3b8;
+      --delete-hover: #ef4444;
+      --empty-color: #94a3b8;
+      --progress-bg: #e2e8f0;
+      --progress-start: #6366f1;
+      --progress-end: #a855f7;
+      --count-bg: #eef2ff;
+      --count-color: #6366f1;
     }
 
     [data-theme="dark"] {
-      --bg-gradient-start: #1a1a2e;
-      --bg-gradient-end: #16213e;
-      --heading-color: #e0e0e0;
-      --input-border: #444;
-      --input-bg: #2a2a3e;
-      --input-color: #e0e0e0;
-      --btn-bg: #5a6fd9;
-      --btn-hover: #4a5fc9;
-      --item-bg: #2a2a3e;
-      --item-shadow: rgba(0, 0, 0, 0.3);
-      --item-color: #e0e0e0;
-      --completed-color: #666;
-      --empty-color: #666;
-      --toggle-bg: rgba(255, 255, 255, 0.1);
-      --toggle-hover: rgba(255, 255, 255, 0.2);
+      --bg-start: #0f172a;
+      --bg-end: #1e1b4b;
+      --card-bg: rgba(15, 23, 42, 0.92);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --title-color: #f1f5f9;
+      --subtitle-color: #475569;
+      --input-bg: #1e293b;
+      --input-border: #334155;
+      --input-border-focus: #818cf8;
+      --input-color: #f1f5f9;
+      --input-placeholder: #475569;
+      --btn-bg: #818cf8;
+      --btn-hover: #6366f1;
+      --btn-shadow: rgba(129, 140, 248, 0.25);
+      --item-bg: #1e293b;
+      --item-border: #334155;
+      --item-shadow: rgba(0, 0, 0, 0.2);
+      --item-hover-shadow: rgba(0, 0, 0, 0.35);
+      --item-hover-border: #4338ca;
+      --item-color: #e2e8f0;
+      --item-completed-color: #475569;
+      --item-accent: #818cf8;
+      --check-border: #475569;
+      --check-fill: #6366f1;
+      --check-fill-end: #818cf8;
+      --delete-color: #475569;
+      --delete-hover: #f87171;
+      --empty-color: #475569;
+      --progress-bg: #334155;
+      --progress-start: #6366f1;
+      --progress-end: #818cf8;
+      --count-bg: rgba(129, 140, 248, 0.12);
+      --count-color: #818cf8;
     }
 
     * {
@@ -48,156 +87,469 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-      display: flex;
-      justify-content: center;
-      padding: 40px 16px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
       min-height: 100vh;
-      transition: background 0.3s;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 52px 16px 80px;
+      transition: background 0.5s ease;
     }
 
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
+      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-14px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideOut {
+      from {
+        opacity: 1;
+        transform: translateX(0) scaleY(1);
+        max-height: 80px;
+        margin-bottom: 10px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+      to {
+        opacity: 0;
+        transform: translateX(18px) scaleY(0.7);
+        max-height: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    @keyframes checkPop {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes progressPulse {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      padding: 32px;
+      box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.18),
+        0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: background 0.35s, border-color 0.35s;
+    }
+
+    /* Header */
     .header {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 24px;
     }
 
-    h1 {
-      text-align: center;
-      color: var(--heading-color);
-      font-size: 28px;
+    .header-left h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--title-color);
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+      transition: color 0.3s;
+    }
+
+    .header-left .subtitle {
+      font-size: 13px;
+      color: var(--subtitle-color);
+      margin-top: 4px;
+      font-weight: 400;
+      transition: color 0.3s;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .count-badge {
+      background: var(--count-bg);
+      color: var(--count-color);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      transition: background 0.3s, color 0.3s;
+      white-space: nowrap;
     }
 
     .theme-toggle {
-      position: absolute;
-      right: 0;
-      background: var(--toggle-bg);
-      border: none;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 20px;
+      width: 38px;
+      height: 38px;
+      font-size: 17px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.25s;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .theme-toggle:hover {
-      background: var(--toggle-hover);
+      border-color: var(--btn-bg);
+      transform: rotate(20deg) scale(1.05);
     }
 
+    /* Progress */
+    .progress-section {
+      margin-bottom: 22px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--subtitle-color);
+      transition: color 0.3s;
+    }
+
+    .progress-percent {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--btn-bg);
+      transition: color 0.3s;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--progress-bg);
+      border-radius: 99px;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--progress-start), var(--progress-end));
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-fill.complete {
+      animation: progressPulse 1.2s ease 0.3s;
+    }
+
+    /* Input */
     .input-row {
       display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .input-row input {
       flex: 1;
-      padding: 12px 16px;
-      border: 2px solid var(--input-border);
-      border-radius: 8px;
-      font-size: 16px;
+      padding: 13px 16px;
+      border: 1.5px solid var(--input-border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      font-weight: 400;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
       background: var(--input-bg);
       color: var(--input-color);
     }
 
-    .input-row input:focus {
-      border-color: var(--btn-bg);
+    .input-row input::placeholder {
+      color: var(--input-placeholder);
     }
 
-    .input-row button {
-      padding: 12px 20px;
+    .input-row input:focus {
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      background: var(--item-bg);
+    }
+
+    .add-btn {
+      padding: 13px 18px;
       background: var(--btn-bg);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 14px var(--btn-shadow);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .input-row button:hover {
+    .add-btn:hover {
       background: var(--btn-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--btn-shadow);
     }
 
+    .add-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .add-btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    /* List */
     ul {
       list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     li {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
       background: var(--item-bg);
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      box-shadow: 0 1px 3px var(--item-shadow);
+      padding: 14px 14px 14px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--item-border);
+      box-shadow: 0 1px 4px var(--item-shadow);
+      transition: box-shadow 0.2s, border-color 0.2s, background 0.3s;
+      animation: slideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+    }
+
+    li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background: linear-gradient(180deg, var(--progress-start), var(--progress-end));
+      border-radius: 0 3px 3px 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    li:hover {
+      box-shadow: 0 4px 16px var(--item-hover-shadow);
+      border-color: var(--item-hover-border);
+    }
+
+    li:hover::before {
+      opacity: 1;
+    }
+
+    li.removing {
+      animation: slideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* Checkbox */
+    .check-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      border: 2px solid var(--check-border);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      padding: 0;
+    }
+
+    .check-btn:hover {
+      border-color: var(--check-fill);
+      background: rgba(99, 102, 241, 0.07);
+    }
+
+    .check-btn .checkmark {
+      width: 12px;
+      height: 12px;
+      opacity: 0;
+      transform: scale(0.4);
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .check-btn.checked {
+      background: linear-gradient(135deg, var(--check-fill), var(--check-fill-end));
+      border-color: transparent;
+      animation: checkPop 0.28s ease;
+    }
+
+    .check-btn.checked .checkmark {
+      opacity: 1;
+      transform: scale(1);
     }
 
     li span {
-      font-size: 16px;
+      flex: 1;
+      font-size: 15px;
       color: var(--item-color);
       word-break: break-word;
-      cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s;
+      font-weight: 450;
+      line-height: 1.45;
+      user-select: none;
     }
 
     li span.completed {
       text-decoration: line-through;
-      color: var(--completed-color);
+      color: var(--item-completed-color);
     }
 
-    li button {
-      background: #e74c3c;
-      color: #fff;
+    .delete-btn {
+      background: transparent;
       border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 14px;
+      color: var(--delete-color);
       cursor: pointer;
-      margin-left: 12px;
+      padding: 5px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    li button:hover {
-      background: #c0392b;
+    li:hover .delete-btn {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .empty-msg {
-      text-align: center;
+    .delete-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .delete-btn:hover {
+      color: var(--delete-hover);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 36px 0 12px;
+      animation: fadeInUp 0.3s ease both;
+    }
+
+    .empty-state svg {
+      width: 52px;
+      height: 52px;
       color: var(--empty-color);
-      margin-top: 16px;
-      font-size: 14px;
+      opacity: 0.45;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+      color: var(--empty-color);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .empty-state .empty-sub {
+      font-size: 13px;
+      color: var(--empty-color);
+      opacity: 0.7;
+      font-weight: 400;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Todo App</h1>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <div class="card">
+      <div class="header">
+        <div class="header-left">
+          <h1>My Tasks</h1>
+          <p class="subtitle">Stay organized, stay focused.</p>
+        </div>
+        <div class="header-right">
+          <span class="count-badge" id="countBadge">0 tasks</span>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+      </div>
+
+      <div class="progress-section" id="progressSection" style="display:none">
+        <div class="progress-header">
+          <span class="progress-label">Progress</span>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="todoInput" placeholder="What needs to be done?" autocomplete="off" />
+        <button class="add-btn" id="addBtn" aria-label="Add task">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="8" y1="2" x2="8" y2="14"/>
+            <line x1="2" y1="8" x2="14" y2="8"/>
+          </svg>
+          Add
+        </button>
+      </div>
+
+      <ul id="todoList"></ul>
+
+      <div class="empty-state" id="emptyMsg">
+        <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="10" y="8" width="32" height="38" rx="5"/>
+          <line x1="18" y1="20" x2="34" y2="20"/>
+          <line x1="18" y1="27" x2="34" y2="27"/>
+          <line x1="18" y1="34" x2="26" y2="34"/>
+        </svg>
+        <p>No tasks yet</p>
+        <span class="empty-sub">Add your first task above to get started</span>
+      </div>
     </div>
-    <div class="input-row">
-      <input type="text" id="todoInput" placeholder="Add a new todo..." />
-      <button id="addBtn">Add</button>
-    </div>
-    <ul id="todoList"></ul>
-    <p class="empty-msg" id="emptyMsg">No todos yet. Add one above!</p>
   </div>
 
   <script>
@@ -206,8 +558,11 @@
     const list = document.getElementById('todoList');
     const emptyMsg = document.getElementById('emptyMsg');
     const themeToggle = document.getElementById('themeToggle');
+    const countBadge = document.getElementById('countBadge');
+    const progressSection = document.getElementById('progressSection');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
 
-    // Theme toggle with localStorage persistence
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
@@ -222,8 +577,24 @@
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
 
-    function updateEmptyMsg() {
-      emptyMsg.style.display = list.children.length === 0 ? 'block' : 'none';
+    function updateUI() {
+      const total = list.children.length;
+      const completed = list.querySelectorAll('.check-btn.checked').length;
+
+      emptyMsg.style.display = total === 0 ? 'flex' : 'none';
+      progressSection.style.display = total === 0 ? 'none' : 'block';
+
+      countBadge.textContent = total === 1 ? '1 task' : `${total} tasks`;
+
+      const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+      progressFill.style.width = pct + '%';
+      progressPercent.textContent = pct + '%';
+
+      if (pct === 100 && total > 0) {
+        progressFill.classList.add('complete');
+      } else {
+        progressFill.classList.remove('complete');
+      }
     }
 
     function addTodo() {
@@ -232,32 +603,47 @@
 
       const li = document.createElement('li');
 
+      const checkBtn = document.createElement('button');
+      checkBtn.className = 'check-btn';
+      checkBtn.setAttribute('aria-label', 'Toggle complete');
+      checkBtn.innerHTML = `<svg class="checkmark" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 5,9.5 10.5,2.5"/></svg>`;
+      checkBtn.addEventListener('click', () => {
+        checkBtn.classList.toggle('checked');
+        span.classList.toggle('completed');
+        updateUI();
+      });
+
       const span = document.createElement('span');
       span.textContent = text;
-      span.addEventListener('click', () => {
-        span.classList.toggle('completed');
-      });
 
       const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.setAttribute('aria-label', 'Delete task');
+      deleteBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 14,4"/><path d="M5,4V3a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1V4"/><path d="M13,4l-1,10H4L3,4"/><line x1="6.5" y1="7.5" x2="6.5" y2="11"/><line x1="9.5" y1="7.5" x2="9.5" y2="11"/></svg>`;
       deleteBtn.addEventListener('click', () => {
-        li.remove();
-        updateEmptyMsg();
+        li.classList.add('removing');
+        li.addEventListener('animationend', () => {
+          li.remove();
+          updateUI();
+        }, { once: true });
       });
 
+      li.appendChild(checkBtn);
       li.appendChild(span);
       li.appendChild(deleteBtn);
       list.appendChild(li);
 
       input.value = '';
       input.focus();
-      updateEmptyMsg();
+      updateUI();
     }
 
     addBtn.addEventListener('click', addTodo);
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') addTodo();
     });
+
+    updateUI();
   </script>
 </body>
 </html>
