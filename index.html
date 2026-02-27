@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
   <title>Todo App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,7 +63,7 @@
       --card-bg: rgba(22, 27, 34, 0.94);
       --card-border: rgba(255, 255, 255, 0.05);
       --title-color: #e6e6f0;
-      --subtitle-color: #5a5a70;
+      --subtitle-color: #8b8ba0;
       --input-bg: #0d1117;
       --input-border: #2d333b;
       --input-border-focus: #7c8cf5;
@@ -557,14 +558,14 @@
     }
 
     /* List */
-    ul {
+    .todo-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    li {
+    .todo-item {
       display: flex;
       align-items: center;
       gap: 14px;
@@ -579,7 +580,7 @@
       cursor: default;
     }
 
-    li::before {
+    .todo-item::before {
       content: '';
       position: absolute;
       left: 0;
@@ -593,24 +594,24 @@
       transform: scaleY(0.5);
     }
 
-    li:hover {
+    .todo-item:hover {
       box-shadow: 0 8px 28px var(--item-hover-shadow);
       border-color: var(--item-hover-border);
       transform: translateY(-2px);
     }
 
-    li:hover::before {
+    .todo-item:hover::before {
       opacity: 1;
       transform: scaleY(1);
     }
 
-    li.removing {
+    .todo-item.removing {
       animation: slideOut 0.35s cubic-bezier(0.4, 0, 1, 1) forwards;
       overflow: hidden;
       pointer-events: none;
     }
 
-    li.hidden {
+    .todo-item.hidden {
       display: none;
     }
 
@@ -667,7 +668,7 @@
       animation: ripple 0.5s ease forwards;
     }
 
-    li .task-text {
+    .todo-item .task-text {
       flex: 1;
       font-size: 15px;
       color: var(--item-color);
@@ -678,7 +679,7 @@
       user-select: none;
     }
 
-    li .task-text.completed {
+    .todo-item .task-text.completed {
       text-decoration: line-through;
       text-decoration-thickness: 2px;
       text-decoration-color: var(--item-completed-color);
@@ -702,7 +703,8 @@
       pointer-events: none;
     }
 
-    li:hover .delete-btn {
+    .todo-item:hover .delete-btn,
+    .todo-item:focus-within .delete-btn {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
@@ -829,6 +831,25 @@
       .filter-tabs { gap: 0; }
       .footer-stats { gap: 16px; }
     }
+
+    /* Focus-visible styles for keyboard navigation */
+    .check-btn:focus-visible,
+    .filter-tab:focus-visible,
+    .theme-toggle:focus-visible,
+    .delete-btn:focus-visible,
+    .add-btn:focus-visible {
+      outline: 2px solid var(--input-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -873,9 +894,9 @@
         <button class="filter-tab" data-filter="completed">Done</button>
       </div>
 
-      <ul id="todoList"></ul>
+      <ul id="todoList" class="todo-list"></ul>
 
-      <div class="empty-state" id="emptyMsg">
+      <div class="empty-state" id="emptyMsg" role="status" aria-live="polite">
         <div class="empty-icon">
           <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="6" y="4" width="24" height="28" rx="4"/>
@@ -957,7 +978,7 @@
     });
 
     function applyFilter() {
-      const items = list.querySelectorAll('li');
+      const items = list.querySelectorAll('.todo-item');
       let visibleCount = 0;
       items.forEach(li => {
         const isCompleted = li.querySelector('.check-btn').classList.contains('checked');
@@ -1051,6 +1072,7 @@
       }
 
       const li = document.createElement('li');
+      li.className = 'todo-item';
       li.style.animationDelay = '0s';
 
       const checkBtn = document.createElement('button');
@@ -1067,6 +1089,7 @@
         checkBtn.classList.toggle('checked');
         span.classList.toggle('completed');
         updateUI();
+        saveTodos();
       });
 
       const span = document.createElement('span');
@@ -1082,6 +1105,7 @@
         li.addEventListener('animationend', () => {
           li.remove();
           updateUI();
+          saveTodos();
         }, { once: true });
       });
 
@@ -1093,6 +1117,7 @@
       input.value = '';
       input.focus();
       updateUI();
+      saveTodos();
     }
 
     addBtn.addEventListener('click', addTodo);
@@ -1100,6 +1125,73 @@
       if (e.key === 'Enter') addTodo();
     });
 
+    // LocalStorage persistence
+    function saveTodos() {
+      const items = list.querySelectorAll('.todo-item');
+      const todos = Array.from(items).map(li => ({
+        text: li.querySelector('.task-text').textContent,
+        completed: li.querySelector('.check-btn').classList.contains('checked')
+      }));
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
+
+    function loadTodos() {
+      const saved = localStorage.getItem('todos');
+      if (!saved) return;
+      try {
+        const todos = JSON.parse(saved);
+        todos.forEach(todo => {
+          input.value = todo.text;
+          addTodoFromData(todo.text, todo.completed);
+        });
+      } catch (e) { /* ignore corrupt data */ }
+    }
+
+    function addTodoFromData(text, completed) {
+      const li = document.createElement('li');
+      li.className = 'todo-item';
+      li.style.animationDelay = '0s';
+
+      const checkBtn = document.createElement('button');
+      checkBtn.className = 'check-btn' + (completed ? ' checked' : '');
+      checkBtn.setAttribute('aria-label', 'Toggle complete');
+      checkBtn.innerHTML = `<svg class="checkmark" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 5,9.5 10.5,2.5"/></svg>`;
+
+      const span = document.createElement('span');
+      span.className = 'task-text' + (completed ? ' completed' : '');
+      span.textContent = text;
+
+      checkBtn.addEventListener('click', () => {
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        checkBtn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 500);
+        checkBtn.classList.toggle('checked');
+        span.classList.toggle('completed');
+        updateUI();
+        saveTodos();
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.setAttribute('aria-label', 'Delete task');
+      deleteBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 14,4"/><path d="M5,4V3a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1V4"/><path d="M13,4l-1,10H4L3,4"/><line x1="6.5" y1="7.5" x2="6.5" y2="11"/><line x1="9.5" y1="7.5" x2="9.5" y2="11"/></svg>`;
+      deleteBtn.addEventListener('click', () => {
+        li.classList.add('removing');
+        li.addEventListener('animationend', () => {
+          li.remove();
+          updateUI();
+          saveTodos();
+        }, { once: true });
+      });
+
+      li.appendChild(checkBtn);
+      li.appendChild(span);
+      li.appendChild(deleteBtn);
+      list.appendChild(li);
+    }
+
+    loadTodos();
     updateUI();
   </script>
 </body>
